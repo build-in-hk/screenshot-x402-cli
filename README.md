@@ -1,6 +1,6 @@
 # screenshot-x402-cli
 
-Command-line **MCP client** for **screenshot-x402** (pay-per-request screenshots and vision for AI agents via [x402](https://www.x402.org/) and USDC). Connects to the worker’s **Streamable HTTP** MCP endpoint, calls **`health`** (free) or paid tools (**`take_screenshot`**, **`analyze_screenshot`**) with **`withX402Client`** and **viem**, then writes **PNG/JPEG**, **JSON**, and an **HTML** report under your chosen output directory.
+Command-line **MCP client** for **screenshot-x402** (pay-per-request screenshots and vision for AI agents via [x402](https://www.x402.org/) and USDC). Connects to the worker’s **Streamable HTTP** MCP endpoint, calls `**health`** (free) or paid tools (`**take_screenshot`**, `**analyze_screenshot**`) with `**withX402Client**` and **viem**, then writes **PNG/JPEG**, **JSON**, and an **HTML** report under your chosen output directory.
 
 **Default MCP URL:** `https://screenshotx402.com/mcp`  
 Override with `--mcp-url` or `MCP_URL` (for example `http://127.0.0.1:8787/mcp` when developing the worker locally).
@@ -8,7 +8,7 @@ Override with `--mcp-url` or `MCP_URL` (for example `http://127.0.0.1:8787/mcp` 
 ## Requirements
 
 - **Node.js 20+**
-- **Paid commands:** a funded **EVM wallet** with **USDC** on the same network the server expects (default: **`base-sepolia`**). Set `X402_PRIVATE_KEY` (never commit this).
+- **Paid commands:** a funded **EVM wallet** with **USDC** on the same network the server expects (default: `**base`**). Set `X402_PRIVATE_KEY` (never commit this).
 
 ## Install
 
@@ -24,7 +24,8 @@ npx screenshot-x402-cli --help
 
 ## Commands
 
-After a global install, two equivalent binaries are available: **`screenshot-x402`** and **`screenshot-x402-cli`**. Examples below use `screenshot-x402`.
+After a global install, two equivalent binaries are available: `**screenshot-x402**` and `**screenshot-x402-cli**`. Examples below use `screenshot-x402`.
+
 
 | Command      | Wallet | Description                                                  |
 | ------------ | ------ | ------------------------------------------------------------ |
@@ -32,6 +33,7 @@ After a global install, two equivalent binaries are available: **`screenshot-x40
 | `screenshot` | Yes    | Calls `take_screenshot` (~$0.01).                            |
 | `analyze`    | Yes    | Calls `analyze_screenshot` (~$0.03) plus server-side vision. |
 | `list-tools` | No     | Prints MCP tool definitions as JSON.                         |
+
 
 ### Free: `health`
 
@@ -47,18 +49,10 @@ screenshot-x402 screenshot --page https://example.com
 screenshot-x402 analyze --page https://example.com
 ```
 
-### Local worker
-
-With the repo’s worker running (`npm run dev` → `http://127.0.0.1:8787/mcp`):
-
-```bash
-export MCP_URL=http://127.0.0.1:8787/mcp
-screenshot-x402 health
-```
-
 ## CLI options
 
 **Global**
+
 
 | Option            | Description                                                                 |
 | ----------------- | --------------------------------------------------------------------------- |
@@ -67,30 +61,37 @@ screenshot-x402 health
 | `--out <dir>`     | Output directory (default: `./output` in the **current working directory**) |
 | `-h`, `--help`    | Show usage                                                                  |
 
+
 **Common to `screenshot` and `analyze`**
 
-| Flag                                          | Description                                                |
-| --------------------------------------------- | ---------------------------------------------------------- |
-| `--width <px>`                                | Viewport width (default: `1280`)                           |
-| `--height <px>`                               | Viewport height (default: `720`)                           |
-| `--full-page`                                 | Capture the full scrollable page                           |
-| `--color-scheme <light\|dark\|no-preference>` | Emulates `prefers-color-scheme` (default: `no-preference`) |
-| `--device-scale-factor <1-3>`                 | Pixel ratio / sharpness (default: `1`)                     |
-| `--hide <selector>`                           | Repeat for each CSS selector to hide before capture        |
 
-**`screenshot` only**
+| Flag                          | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `--width <px>`                | Viewport width (default: `1280`)                    |
+| `--height <px>`               | Viewport height (default: `720`)                    |
+| `--full-page`                 | Capture the full scrollable page                    |
+| `--color-scheme <light        | dark                                                |
+| `--device-scale-factor <1-3>` | Pixel ratio / sharpness (default: `1`)              |
+| `--hide <selector>`           | Repeat for each CSS selector to hide before capture |
 
-| Flag                   | Description                                         |
-| ---------------------- | --------------------------------------------------- |
-| `--format <png\|jpeg>` | Output format (default: `png`)                      |
-| `--delay <ms>`         | Extra wait after load (default: `0`)                |
-| `--cache-ttl <sec>`    | Cache TTL; `0` skips cache reads (default: `86400`) |
 
-**`analyze` only**
+`**screenshot` only**
+
+
+| Flag                | Description                                         |
+| ------------------- | --------------------------------------------------- |
+| `--format <png      | jpeg>`                                              |
+| `--delay <ms>`      | Extra wait after load (default: `0`)                |
+| `--cache-ttl <sec>` | Cache TTL; `0` skips cache reads (default: `86400`) |
+
+
+`**analyze` only**
+
 
 | Flag              | Description                                 |
 | ----------------- | ------------------------------------------- |
 | `--prompt <text>` | Vision instruction (default: short summary) |
+
 
 ### Examples
 
@@ -115,6 +116,7 @@ screenshot-x402 analyze --page https://example.com \
 
 ## Environment variables
 
+
 | Variable           | Description                                    |
 | ------------------ | ---------------------------------------------- |
 | `X402_PRIVATE_KEY` | `0x…` — required for paid tools                |
@@ -122,15 +124,18 @@ screenshot-x402 analyze --page https://example.com \
 | `MCP_URL`          | Default MCP endpoint if `--mcp-url` is omitted |
 | `OUT_DIR`          | Default output directory if `--out` is omitted |
 
+
 ## Output
 
 Each run creates timestamped files under your output directory (default `./output`; add `output/` to `.gitignore` in your project if needed):
+
 
 | File              | Purpose                                                           |
 | ----------------- | ----------------------------------------------------------------- |
 | `*.html`          | Open in a browser — embeds images as `data:` URLs and text blocks |
 | `*.png` / `*.jpg` | Decoded screenshot bytes when the tool returns an image           |
 | `*.json`          | Raw tool result for debugging                                     |
+
 
 ## Develop from this repo
 
@@ -156,7 +161,7 @@ npm publish --access public
 
 ## Safety
 
-- Treat **`X402_PRIVATE_KEY`** like a production secret; use **burner / testnet** keys for experiments.
+- Treat `**X402_PRIVATE_KEY**` like a production secret; use **burner / testnet** keys for experiments.
 - This CLI **auto-approves** x402 payments in code for automation — **not** suitable for unattended use with high-value or mainnet wallets without your own safeguards.
 
 ## License

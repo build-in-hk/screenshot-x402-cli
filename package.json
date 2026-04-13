@@ -1,0 +1,62 @@
+{
+  "name": "screenshot-x402-cli",
+  "version": "1.0.0",
+  "description": "CLI for screenshot-x402: MCP Streamable HTTP client with x402 USDC payments — health, screenshots, and vision analysis.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "screenshot-x402": "./dist/index.js",
+    "screenshot-x402-cli": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "health": "tsx src/index.ts health"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/build-in-hk/screenshot-x402-mcp.git",
+    "directory": "screenshot-x402-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/build-in-hk/screenshot-x402-mcp/issues"
+  },
+  "homepage": "https://github.com/build-in-hk/screenshot-x402-mcp/tree/main/screenshot-x402-cli#readme",
+  "keywords": [
+    "screenshot",
+    "x402",
+    "mcp",
+    "model-context-protocol",
+    "usdc",
+    "cli",
+    "vision",
+    "playwright",
+    "cloudflare"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.28.0",
+    "@x402/core": "^2.8.0",
+    "@x402/evm": "^2.8.0",
+    "agents": "^0.8.7",
+    "viem": "^2.21.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,6 +1,6 @@
 # screenshot-x402-cli
 
-Command-line **MCP client** for **screenshot-x402** (pay-per-request screenshots and vision for AI agents via [x402](https://www.x402.org/) and USDC). Connects to the worker’s **Streamable HTTP** MCP endpoint, calls `**health`** (free) or paid tools (`**take_screenshot`**, `**analyze_screenshot**`) with `**withX402Client**` and **viem**, then writes **PNG/JPEG**, **JSON**, and an **HTML** report under your chosen output directory.
+Command-line **MCP client** for **screenshot-x402** (pay-per-request screenshots and vision for AI agents via [x402](https://www.x402.org/) and USDC). Connects to the worker’s **Streamable HTTP** MCP endpoint, calls `health` (free) or paid tools (`take_screenshot`, `analyze_screenshot`) with `withX402Client` and **viem**, then writes **PNG/JPEG**, **JSON**, and an **HTML** report under your chosen output directory.
 
 **Default MCP URL:** `https://screenshotx402.com/mcp`  
 Override with `--mcp-url` or `MCP_URL` (for example `http://127.0.0.1:8787/mcp` when developing the worker locally).
@@ -8,7 +8,7 @@ Override with `--mcp-url` or `MCP_URL` (for example `http://127.0.0.1:8787/mcp` 
 ## Requirements
 
 - **Node.js 20+**
-- **Paid commands:** a funded **EVM wallet** with **USDC** on the same network the server expects (default: `**base`**). Set `X402_PRIVATE_KEY` (never commit this).
+- **Paid commands:** a funded **EVM wallet** with **USDC** on the same network the server expects (default: `base`). Set `X402_PRIVATE_KEY` (never commit this).
 
 ## Install
 
@@ -24,7 +24,7 @@ npx screenshot-x402-cli --help
 
 ## Commands
 
-After a global install, two equivalent binaries are available: `**screenshot-x402**` and `**screenshot-x402-cli**`. Examples below use `screenshot-x402`.
+After a global install, two equivalent binaries are available: `screenshot-x402` and `screenshot-x402-cli`. Examples below use `screenshot-x402`.
 
 
 | Command      | Wallet | Description                                                  |
@@ -75,7 +75,7 @@ screenshot-x402 analyze --page https://example.com
 | `--hide <selector>`           | Repeat for each CSS selector to hide before capture |
 
 
-`**screenshot` only**
+**`screenshot` only**
 
 
 | Flag                | Description                                         |
@@ -85,7 +85,7 @@ screenshot-x402 analyze --page https://example.com
 | `--cache-ttl <sec>` | Cache TTL; `0` skips cache reads (default: `86400`) |
 
 
-`**analyze` only**
+**`analyze` only**
 
 
 | Flag              | Description                                 |
@@ -161,7 +161,7 @@ npm publish --access public
 
 ## Safety
 
-- Treat `**X402_PRIVATE_KEY**` like a production secret; use **burner / testnet** keys for experiments.
+- Treat `X402_PRIVATE_KEY` like a production secret; use **burner / testnet** keys for experiments.
 - This CLI **auto-approves** x402 payments in code for automation — **not** suitable for unattended use with high-value or mainnet wallets without your own safeguards.
 
 ## License

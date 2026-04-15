@@ -62,7 +62,7 @@ function usage(): void {
       Call take_screenshot ($0.01). Needs X402_PRIVATE_KEY.
 
   screenshot-x402 analyze --page <https://...>
-      Call analyze_screenshot ($0.03). Needs X402_PRIVATE_KEY + server OPENROUTER_API_KEY or OPENAI_API_KEY.
+      Call analyze_screenshot ($0.03). Needs X402_PRIVATE_KEY
 
   screenshot-x402 list-tools
       List MCP tools.
@@ -93,7 +93,7 @@ Options:
 
 Env:
   X402_PRIVATE_KEY    0x… private key for x402 (testnet USDC)
-  X402_NETWORK        default base-sepolia
+  X402_NETWORK        default base
   MCP_URL             Override default MCP URL
   OUT_DIR             Override default output directory (same as --out)
 `);
@@ -201,7 +201,7 @@ async function main(): Promise<void> {
   );
 
   const pk = process.env.X402_PRIVATE_KEY as `0x${string}` | undefined;
-  const network = process.env.X402_NETWORK ?? "base-sepolia";
+  const network = process.env.X402_NETWORK ?? "base";
   const usePayment = Boolean(pk);
 
   const mcp = usePayment

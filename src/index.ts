@@ -16,7 +16,7 @@
 
 import { readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -73,6 +73,7 @@ Options:
   --mcp-url <url>     MCP Streamable HTTP URL (default: ${DEFAULT_MCP})
   --page <url>        Target page URL (screenshot / analyze)
   --out <dir>         Output directory (default: ./output in current working directory)
+  --json              Print one JSON object on stdout (health / screenshot / analyze / list-tools); progress stays on stderr
 
   screenshot / analyze (render options, same as MCP tools):
   --width <px>        Viewport width (default: 1280)
@@ -187,6 +188,7 @@ async function main(): Promise<void> {
   }
 
   const command = args[0];
+  const jsonOut = hasFlag(args, "--json");
   const mcpUrl =
     argValue(args, "--mcp-url") ?? process.env.MCP_URL ?? DEFAULT_MCP;
   const outDir = argValue(args, "--out") ?? process.env.OUT_DIR ?? DEFAULT_OUT;
@@ -220,15 +222,29 @@ async function main(): Promise<void> {
 
   if (command === "list-tools") {
     const { tools } = await mcp.listTools();
-    console.log(JSON.stringify(tools, null, 2));
+    console.log(
+      jsonOut
+        ? JSON.stringify({ command, tools })
+        : JSON.stringify(tools, null, 2),
+    );
     await mcp.close();
     return;
   }
 
   if (command === "health") {
     const result = await callToolMaybePaid(mcp, usePayment, "health", {});
-    await writeOutputs(outDir, "health", pageUrl ?? "", result, false);
-    printResult(result);
+    const paths = await writeOutputs(
+      outDir,
+      "health",
+      pageUrl ?? "",
+      result,
+      false,
+    );
+    if (jsonOut) {
+      printJsonRecord("health", pageUrl ?? "", result, paths);
+    } else {
+      printResult(result);
+    }
     await mcp.close();
     return;
   }
@@ -257,8 +273,18 @@ async function main(): Promise<void> {
       deviceScaleFactor: parseDeviceScaleFactor(args),
       hideSelectors,
     });
-    await writeOutputs(outDir, "screenshot", pageUrl, result, true);
-    printResult(result);
+    const paths = await writeOutputs(
+      outDir,
+      "screenshot",
+      pageUrl,
+      result,
+      true,
+    );
+    if (jsonOut) {
+      printJsonRecord("screenshot", pageUrl, result, paths);
+    } else {
+      printResult(result);
+    }
     await mcp.close();
     return;
   }
@@ -293,8 +319,12 @@ async function main(): Promise<void> {
         hideSelectors,
       },
     );
-    await writeOutputs(outDir, "analyze", pageUrl, result, true);
-    printResult(result);
+    const paths = await writeOutputs(outDir, "analyze", pageUrl, result, true);
+    if (jsonOut) {
+      printJsonRecord("analyze", pageUrl, result, paths);
+    } else {
+      printResult(result);
+    }
     await mcp.close();
     return;
   }
@@ -334,19 +364,56 @@ function printResult(result: ToolRunResult): void {
   }
 }
 
+type WrittenArtifactPaths = {
+  resultJson: string;
+  reportHtml: string;
+  images: string[];
+};
+
+function extractTextParts(result: ToolRunResult): string[] {
+  const parts: string[] = [];
+  for (const block of result.content ?? []) {
+    if (block.type === "text" && block.text) {
+      parts.push(block.text);
+    }
+  }
+  return parts;
+}
+
+function printJsonRecord(
+  command: string,
+  pageUrl: string,
+  result: ToolRunResult,
+  paths: WrittenArtifactPaths,
+): void {
+  if (result.isError) {
+    console.error("Tool returned isError=true");
+  }
+  const payload = {
+    command,
+    pageUrl: pageUrl || null,
+    isError: Boolean(result.isError),
+    text: extractTextParts(result),
+    paths,
+    _meta: result._meta ?? null,
+  };
+  console.log(JSON.stringify(payload));
+}
+
 async function writeOutputs(
   outDir: string,
   prefix: string,
   pageUrl: string,
   result: ToolRunResult,
   writeImages: boolean,
-): Promise<void> {
+): Promise<WrittenArtifactPaths> {
   await mkdir(outDir, { recursive: true });
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
   const base = join(outDir, `${prefix}-${ts}`);
 
+  const resultJsonPath = resolve(`${base}.json`);
   await writeFile(
-    `${base}.json`,
+    resultJsonPath,
     JSON.stringify(
       {
         pageUrl,
@@ -372,14 +439,16 @@ async function writeOutputs(
     }
   }
 
+  const imagePaths: string[] = [];
   let i = 0;
   for (const img of imgs) {
     const ext =
       img.mime.includes("jpeg") || img.mime.includes("jpg") ? "jpg" : "png";
     const buf = Buffer.from(img.data, "base64");
-    const path = `${base}-${i}.${ext}`;
-    await writeFile(path, buf);
-    console.error(`Wrote image: ${path}`);
+    const imagePath = resolve(`${base}-${i}.${ext}`);
+    await writeFile(imagePath, buf);
+    imagePaths.push(imagePath);
+    console.error(`Wrote image: ${imagePath}`);
     i++;
   }
 
@@ -404,9 +473,15 @@ async function writeOutputs(
   }
 
   htmlParts.push("</body></html>");
-  const htmlPath = `${base}.html`;
-  await writeFile(htmlPath, htmlParts.join("\n"), "utf-8");
-  console.error(`Wrote report: ${htmlPath}`);
+  const reportHtmlPath = resolve(`${base}.html`);
+  await writeFile(reportHtmlPath, htmlParts.join("\n"), "utf-8");
+  console.error(`Wrote report: ${reportHtmlPath}`);
+
+  return {
+    resultJson: resultJsonPath,
+    reportHtml: reportHtmlPath,
+    images: imagePaths,
+  };
 }
 
 function escapeHtml(s: string): string {

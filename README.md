@@ -59,6 +59,7 @@ screenshot-x402 analyze --page https://example.com
 | `--mcp-url <url>` | MCP Streamable HTTP URL (default: `https://screenshotx402.com/mcp`)         |
 | `--page <url>`    | Target URL (required for `screenshot` and `analyze`)                        |
 | `--out <dir>`     | Output directory (default: `./output` in the **current working directory**) |
+| `--json`          | Print one JSON object on stdout (`health`, `screenshot`, `analyze`, `list-tools`); logs stay on stderr |
 | `-h`, `--help`    | Show usage                                                                  |
 
 
@@ -135,6 +136,8 @@ Each run creates timestamped files under your output directory (default `./outpu
 | `*.html`          | Open in a browser — embeds images as `data:` URLs and text blocks |
 | `*.png` / `*.jpg` | Decoded screenshot bytes when the tool returns an image           |
 | `*.json`          | Raw tool result for debugging                                     |
+
+With `--json`, the CLI also prints a **single line** of JSON on stdout with `command`, `pageUrl`, `isError`, `text` (tool text parts), absolute `paths` to the files above, and `_meta`. Image base64 is not repeated on stdout (use the saved `*.json` or image files).
 
 
 ## Develop from this repo

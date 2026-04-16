@@ -1,5 +1,7 @@
 <div align="center">
   <a href="https://screenshotx402.com/" title="screenshot-x402"><img src="https://screenshotx402.com/icons/favicon-96x96.png" alt="screenshot-x402" width="96" height="96"></a>
+  <br />
+  <p><a href="./README.md">English</a> | <a href="./README-ZH.md">中文文档</a></p>
 </div>
 
 # screenshot-x402-cli
@@ -72,7 +74,7 @@ screenshot-x402 analyze --page https://example.com
 | `--width <px>`                | Viewport width (default: `1280`)                    |
 | `--height <px>`               | Viewport height (default: `720`)                    |
 | `--full-page`                 | Capture the full scrollable page                    |
-| `--color-scheme <light        | dark                                                |
+| `--color-scheme <light\|dark>` | Color scheme                                        |
 | `--device-scale-factor <1-3>` | Pixel ratio / sharpness (default: `1`)              |
 | `--hide <selector>`           | Repeat for each CSS selector to hide before capture |
 
@@ -80,7 +82,7 @@ screenshot-x402 analyze --page https://example.com
 
 | Flag                | Description                                         |
 | ------------------- | --------------------------------------------------- |
-| `--format <png      | jpeg>`                                              |
+| `--format <png\|jpeg>`         | Output format                                       |
 | `--delay <ms>`      | Extra wait after load (default: `0`)                |
 | `--cache-ttl <sec>` | Cache TTL; `0` skips cache reads (default: `86400`) |
 

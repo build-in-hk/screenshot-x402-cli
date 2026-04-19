@@ -37,7 +37,7 @@ function cliVersion(): string {
 
 const VERSION = cliVersion();
 const DEFAULT_OUT = join(process.cwd(), "output");
-const DEFAULT_MCP = "https://localhost:8787/mcp";
+const DEFAULT_MCP = "https://screenshotx402.com/mcp";
 
 /** Normalized tool output for this CLI (handles minor SDK / wrapper shape differences). */
 type ToolRunResult = {

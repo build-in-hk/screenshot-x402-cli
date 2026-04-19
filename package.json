@@ -1,6 +1,6 @@
 {
   "name": "screenshot-x402-cli",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "CLI for screenshot-x402: MCP Streamable HTTP client with x402 USDC payments — health, screenshots, and vision analysis.",
   "type": "module",
   "main": "./dist/index.js",
